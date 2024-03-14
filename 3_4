@@ -1,0 +1,87 @@
+package converter
+
+import java.math.BigInteger
+
+private val symbols = listOf(
+    '0',
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    'a',
+    'b',
+    'c',
+    'd',
+    'e',
+    'f',
+    'g',
+    'h',
+    'i',
+    'j',
+    'k',
+    'l',
+    'm',
+    'n',
+    'o',
+    'p',
+    'q',
+    'r',
+    's',
+    't',
+    'u',
+    'v',
+    'w',
+    'x',
+    'y',
+    'z'
+)
+
+fun main() {
+    menu()
+}
+
+fun menu() {
+    while (true) {
+        print("\nEnter two numbers in format: {source base} {target base} (To quit type /exit) ")
+        val input = readln()
+        if (input == "/exit") break
+        val (from, to) = input.split(" ")
+        while (true) {
+            print("\nEnter number in base $from to convert to base $to (To go back type /back) ")
+            val number = readln()
+            if (number == "/back") break
+            val toDec = if (from == "10") number else convertToDec(number, from.toInt())
+            val result = if (to == "10") toDec else convertFromDec(toDec, to.toInt())
+            print("Conversion result: $result\n")
+        }
+    }
+}
+
+fun convertFromDec(input: String, base: Int): String {
+
+    val outputNumber = mutableListOf<Char>()
+    val numbers = symbols.subList(0, base)
+    var number = BigInteger(input)
+    while (true) {
+        val (result, remainder) = number.divideAndRemainder(base.toBigInteger())
+        outputNumber.add(numbers[remainder.toInt()])
+        if (result <= 0.toBigInteger()) break else number = result
+    }
+    return outputNumber.reversed().joinToString("")
+}
+
+fun convertToDec(input: String, base: Int): String {
+    var outputNumber: BigInteger = BigInteger.ZERO
+    val number = input.lowercase().toList().reversed()
+    val numbers = symbols.subList(0, base)
+    for (i in number.indices) {
+        val digit = numbers.indexOf(number[i]).toBigInteger() * (base.toBigInteger().pow(i))
+        outputNumber += digit
+    }
+    return outputNumber.toString()
+}
