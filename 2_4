@@ -1,0 +1,67 @@
+package converter
+
+import kotlin.math.pow
+
+// Do not delete this line
+
+fun main() {
+    menu()
+}
+
+fun menu() {
+    while (true) {
+        print("\nDo you want to convert /from decimal or /to decimal? (To quit type /exit) ")
+        val activity = readln()
+        if (activity == "/exit") break
+        print(if (activity == "/from") "\nEnter a number in decimal system: " else "\nEnter source number: ")
+        val inputNumber = readln()
+        print(if (activity == "/from") "Enter the target base: " else "Enter source base: ")
+        val base = readln().toInt()
+        val result = when (activity) {
+            "/from" -> convertFromDec(inputNumber, base)
+            "/to" -> convertToDec(inputNumber, base)
+            else -> error("")
+        }
+        print(if (activity == "/from") "Conversion result: $result\n" else "Conversion to decimal result: $result\n")
+    }
+}
+
+fun convertFromDec(input: String, base: Int): String {
+    val bin = arrayOf('0', '1')
+    val oct = arrayOf('0', '1', '2', '3', '4', '5', '6', '7')
+    val hex = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+    val outputNumber = mutableListOf<Char>()
+    val numbers = when (base) {
+        2 -> bin
+        8 -> oct
+        16 -> hex
+        else -> error("")
+    }
+    var number = input.toInt()
+    while (number != 0) {
+        val remainder = numbers[number % base]
+        outputNumber.add(remainder)
+        number /= base
+    }
+    return outputNumber.reversed().joinToString("")
+}
+
+fun convertToDec(input: String, base: Int): String {
+    val bin = arrayOf('0', '1')
+    val oct = arrayOf('0', '1', '2', '3', '4', '5', '6', '7')
+    val hex = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
+    val outputNumber = mutableListOf<Int>()
+    val number = input.lowercase().toList().reversed()
+    val numbers = when (base) {
+        2 -> bin
+        8 -> oct
+        16 -> hex
+        else -> error("")
+    }
+    for (i in number.indices) {
+        val digit = numbers.indexOf(number[i]) * (base.toDouble().pow(i)).toInt()
+        print(digit)
+        outputNumber.add(digit)
+    }
+    return outputNumber.sum().toString()
+}
