@@ -1,0 +1,31 @@
+package converter // Do not delete this line
+
+fun main() {
+    println("Enter number in decimal system: ")
+    val number = readln()
+    println("Enter target base: ")
+    val base = readln().toInt()
+    val result = convert(number.toInt(), base)
+    println("Conversion result: $result")
+
+}
+
+fun convert(input: Int, base: Int): String {
+    val bin = arrayOf('0', '1')
+    val oct = arrayOf('0', '1', '2', '3', '4', '5', '6', '7')
+    val hex = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F')
+    val outputNumber = mutableListOf<Char>()
+    val numbers = when (base) {
+        2 -> bin
+        8 -> oct
+        16 -> hex
+        else -> error("")
+    }
+    var number = input
+    while (number != 0) {
+        val remainder = numbers[number % base]
+        outputNumber.add(remainder)
+        number /= base
+    }
+    return outputNumber.reversed().joinToString("")
+}
